@@ -31,6 +31,6 @@ public class Calculator {
                 System.err.printf("Invalid operation '%s'\n", operation);
                 return;
         }
-        System.out.printf("%f %s %f = %f\n", a, operation, b, result);
+        System.out.printf("%s %s %s = %s\n", a, operation, b, result);
     }
 }
