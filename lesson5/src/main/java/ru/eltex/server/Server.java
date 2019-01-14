@@ -1,5 +1,7 @@
 package ru.eltex.server;
 
+import ru.eltex.phonebook.PhoneBook;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,7 +15,7 @@ public class Server extends Thread {
 
     public static void main(String[] args) {
         try {
-            ServerSocket server = new ServerSocket(7777);
+            ServerSocket server = new ServerSocket(80);
             System.out.println("Server started");
             while (true) {
                 new Server(server.accept());
@@ -39,7 +41,12 @@ public class Server extends Thread {
                 filename = "index.html";
             }
             System.out.println("File requested: " + filename);
-            byte[] byteArray = Files.readAllBytes(Paths.get(filename));
+            byte[] byteArray;
+            if (filename.equals("phonebook")) {
+                byteArray = new PhoneBook("phonebook.csv").getUsersHtmlTable();
+            } else {
+                byteArray = Files.readAllBytes(Paths.get(filename));
+            }
             writeResponse(byteArray);
         } catch (Exception e) {
             System.err.println("Error: " + e);
