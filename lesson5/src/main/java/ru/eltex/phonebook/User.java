@@ -1,26 +1,26 @@
 package ru.eltex.phonebook;
 
 public class User implements CSV {
-    private static int idCounter = 0;
-    
     private int id;
     private String name;
     private String phoneNumber;
 
-    public User() {}
-
-    public User(String name, String phoneNumber) {
-        id = ++idCounter;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
+    public User(String csvLine) {
+        initWithCSV(csvLine);
     }
 
-    private void setId(int id) {
-        this.id = id;
+    public User(int id, String name, String phoneNumber) {
+        setId(id);
+        setName(name);
+        setPhoneNumber(phoneNumber);
     }
 
     public int getId() {
         return id;
+    }
+
+    private void setId(int id) {
+        this.id = id;
     }
     
     public String getName() {

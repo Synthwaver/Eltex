@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 public class PhoneBook {
     private ArrayList<User> users = new ArrayList<>();
+    private int idCounter;
     private final String filename;
     
     public static void main(String[] args) {
@@ -23,8 +24,7 @@ public class PhoneBook {
         try (FileReader reader = new FileReader(filename); Scanner scanner = new Scanner(reader)) {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                User user = new User();
-                user.initWithCSV(line);
+                User user = new User(line);
                 users.add(user);
             }
         }
@@ -34,6 +34,7 @@ public class PhoneBook {
         catch (IOException e) {
             System.err.println("Couldn't open file '" + filename + "'");
         }
+        initIdCounter();
     }
 
     private void enterMenu() {
@@ -64,6 +65,16 @@ public class PhoneBook {
         }
     }
 
+    private void initIdCounter() {
+        int maxId = 0;
+        for (User user : users) {
+            if (user.getId() > maxId) {
+                maxId = user.getId();
+            }
+        }
+        idCounter = maxId;
+    }
+
     private void printAllUsers() {
         if (users.size() == 0) {
             System.out.println("No users\n");
@@ -84,7 +95,7 @@ public class PhoneBook {
         System.out.print("Phone number: ");
         String phoneNumber = scanner.nextLine();
 
-        User user = new User(name, phoneNumber);
+        User user = new User(++idCounter, name, phoneNumber);
         users.add(user);
         
         System.out.printf("User added with ID = %d\n\n", user.getId());
