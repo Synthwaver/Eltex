@@ -1,5 +1,7 @@
 package ru.eltex.phonebook;
 
+import ru.eltex.server.Server;
+
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -12,10 +14,11 @@ public class PhoneBook {
     private int idCounter;
     private final String filename;
     
-    public static void main(String[] args) {
-        PhoneBook phonebook = new PhoneBook("phonebook.csv");
-        phonebook.enterMenu();
-        phonebook.save();
+    public static void main(String[] args) throws IOException {
+        PhoneBook phoneBook = new PhoneBook("phonebook.csv");
+        new Server(80, phoneBook);
+        phoneBook.enterMenu();
+        phoneBook.save();
     }
 
     public PhoneBook(String filename) {
@@ -116,9 +119,9 @@ public class PhoneBook {
         System.out.print("User not found\n");
     }
 
-    public byte[] getUsersHtmlTable() {
+    public String getUsersHtmlTable() {
         if (users.size() == 0) {
-            return "No users".getBytes();
+            return "No users";
         }
 
         StringBuilder str = new StringBuilder();
@@ -142,6 +145,6 @@ public class PhoneBook {
         }
         str.append("</table></center></html>");
 
-        return str.toString().getBytes();
+        return str.toString();
     }
 }
