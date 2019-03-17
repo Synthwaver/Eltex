@@ -30,7 +30,6 @@ public class Server implements Runnable, Closeable {
             } catch (IOException e) {
                 System.err.println("Failed to serve the client:");
                 System.err.println(e.getMessage());
-                e.printStackTrace();
             }
         }
     }
@@ -39,5 +38,11 @@ public class Server implements Runnable, Closeable {
     public void close() throws IOException {
         acceptanceThread.interrupt();
         serverSocket.close();
+    }
+
+    public static void main(String[] args) throws IOException {
+        PhoneBook phoneBook = PhoneBook.getInstance();
+        new Server(80, phoneBook);
+        phoneBook.enterMenu();
     }
 }

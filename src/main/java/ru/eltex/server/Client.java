@@ -1,9 +1,11 @@
 package ru.eltex.server;
 
 import ru.eltex.phonebook.PhoneBook;
+import ru.eltex.phonebook.User;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,7 +19,7 @@ public class Client implements Runnable {
 
     private static final Pattern pagePattern = Pattern.compile("GET /(.*?) .*");
 
-    public Client(Socket socket, PhoneBook phonebook) throws IOException {
+    Client(Socket socket, PhoneBook phonebook) throws IOException {
         this.socket = socket;
         in = this.socket.getInputStream();
         out = this.socket.getOutputStream();
@@ -84,7 +86,7 @@ public class Client implements Runnable {
 
     private byte[] getResponseContent(String page) throws IOException {
         if (page.equals(PHONEBOOK_PAGE)) {
-            return phoneBook.getUsersHtmlTable().getBytes();
+            return getUsersHtmlTable().getBytes();
         }
 
         try (RandomAccessFile file = new RandomAccessFile(page, "r")) {
@@ -101,5 +103,36 @@ public class Client implements Runnable {
         out.write(response.getBytes());
         out.write(content);
         out.flush();
+    }
+
+    private String getUsersHtmlTable() {
+        List<User> users = phoneBook.getUsers();
+
+        if (users.size() == 0) {
+            return "No users";
+        }
+
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("<html><center><table>");
+
+        strBuilder.append("<style type=\"text/css\">" +
+                "table { border-collapse: collapse; }" +
+                "td, th { padding: 10px; border: 1px solid black; }" +
+                "</style>");
+
+        strBuilder.append("<tr><td>ID</td><td>Name</td><td>Phone number</td></tr>");
+
+        for (User user : users) {
+            strBuilder.append("<tr><td>");
+            strBuilder.append(user.getId());
+            strBuilder.append("</td><td>");
+            strBuilder.append(user.getName());
+            strBuilder.append("</td><td>");
+            strBuilder.append(user.getPhoneNumber());
+            strBuilder.append("</td></tr>");
+        }
+        strBuilder.append("</table></center></html>");
+
+        return strBuilder.toString();
     }
 }

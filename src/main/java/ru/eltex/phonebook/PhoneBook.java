@@ -1,46 +1,35 @@
 package ru.eltex.phonebook;
 
-import ru.eltex.server.Server;
-
 import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class PhoneBook {
-    private ArrayList<User> users = new ArrayList<>();
-    private int idCounter;
-    private final String filename;
-    
-    public static void main(String[] args) throws IOException {
-        PhoneBook phoneBook = new PhoneBook("phonebook.csv");
-        new Server(80, phoneBook);
-        phoneBook.enterMenu();
-        phoneBook.save();
-    }
+    private final PhoneBookStorage storage;
 
-    public PhoneBook(String filename) {
-        this.filename = filename;
-
-        try (FileReader reader = new FileReader(filename); Scanner scanner = new Scanner(reader)) {
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                User user = new User(line);
-                users.add(user);
+    private static PhoneBook instance;
+    public static PhoneBook getInstance() {
+        if (instance == null) {
+            try {
+                instance = new PhoneBook();
+            } catch (IOException e) {
+                System.err.println("Failed to create PhoneBook");
+                e.printStackTrace();
+                System.exit(1);
             }
         }
-        catch (FileNotFoundException e) {
-            System.out.println("File '" + filename + "' was not found. A new one will be created on exit.");
-        }
-        catch (IOException e) {
-            System.err.println("Couldn't open file '" + filename + "'");
-        }
-        initIdCounter();
+        return instance;
     }
 
-    private void enterMenu() {
+    private PhoneBook() throws IOException {
+        storage = new CSVStorage(this, "phonebook.csv");
+    }
+
+    public List<User> getUsers() {
+        return storage.getAllUsers();
+    }
+
+    public void enterMenu() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("Menu:");
@@ -49,36 +38,16 @@ public class PhoneBook {
 
             int option = scanner.nextInt();
             switch (option) {
-                case 1: printAllUsers(); break;
+                case 1: printUsers(); break;
                 case 2: addUser(); break;
                 case 3: removeUser(); break;
-                case 0: return;
+                case 0: System.exit(0);
             }
         }
     }
 
-    private void save() {
-        try (FileWriter writer = new FileWriter(filename)) {
-            for (User user : users) {
-                writer.write(user.toCSV() + "\n");
-            }
-        }
-        catch (IOException e) {
-            System.err.println("Failed to save to file '" + filename + "'");
-        }
-    }
-
-    private void initIdCounter() {
-        int maxId = 0;
-        for (User user : users) {
-            if (user.getId() > maxId) {
-                maxId = user.getId();
-            }
-        }
-        idCounter = maxId;
-    }
-
-    private void printAllUsers() {
+    private void printUsers() {
+        List<User> users = storage.getAllUsers();
         if (users.size() == 0) {
             System.out.println("No users\n");
             return;
@@ -98,53 +67,14 @@ public class PhoneBook {
         System.out.print("Phone number: ");
         String phoneNumber = scanner.nextLine();
 
-        User user = new User(++idCounter, name, phoneNumber);
-        users.add(user);
-        
-        System.out.printf("User added with ID = %d\n\n", user.getId());
+        storage.insertNewUser(name, phoneNumber);
     }
     
     private void removeUser() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("ID: ");
         int id = scanner.nextInt();
-        
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getId() == id) {
-                users.remove(i);
-                System.out.println("User removed\n");
-                return;
-            }
-        }
-        System.out.print("User not found\n");
-    }
 
-    public String getUsersHtmlTable() {
-        if (users.size() == 0) {
-            return "No users";
-        }
-
-        StringBuilder str = new StringBuilder();
-        str.append("<html><center><table>");
-
-        str.append("<style type=\"text/css\">" +
-                "table { border-collapse: collapse; }" +
-                "td, th { padding: 10px; border: 1px solid black; }" +
-                "</style>");
-
-        str.append("<tr><td>ID</td><td>Name</td><td>Phone number</td></tr>");
-
-        for (User user : users) {
-            str.append("<tr><td>");
-            str.append(user.getId());
-            str.append("</td><td>");
-            str.append(user.getName());
-            str.append("</td><td>");
-            str.append(user.getPhoneNumber());
-            str.append("</td></tr>");
-        }
-        str.append("</table></center></html>");
-
-        return str.toString();
+        storage.removeUserById(id);
     }
 }
