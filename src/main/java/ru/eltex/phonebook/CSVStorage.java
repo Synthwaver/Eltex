@@ -29,10 +29,11 @@ public class CSVStorage extends PhoneBookStorage {
             return users;
         } catch (FileNotFoundException e) {
             System.err.println("File '" + csvFileName + "' not found");
+            return null;
         } catch (IOException e) {
             System.err.println("Failed to read file '" + csvFileName + "'");
+            return null;
         }
-        return null;
     }
 
     @Override

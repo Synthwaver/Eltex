@@ -108,7 +108,7 @@ public class Client implements Runnable {
     private String getUsersHtmlTable() {
         List<User> users = phoneBook.getUsers();
 
-        if (users.size() == 0) {
+        if (users == null || users.size() == 0) {
             return "No users";
         }
 
