@@ -5,11 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class CSVStorage extends PhoneBookStorage {
+public class CSVStorage implements PhoneBookStorage {
     private final String csvFileName;
 
-    CSVStorage(PhoneBook phoneBook, String csvFileName) throws IOException {
-        super(phoneBook);
+    public CSVStorage(String csvFileName) throws IOException {
         this.csvFileName = csvFileName;
 
         File file = new File(csvFileName);

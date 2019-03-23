@@ -1,6 +1,5 @@
 package ru.eltex.phonebook;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -10,20 +9,13 @@ public class PhoneBook {
     private static PhoneBook instance;
     public static PhoneBook getInstance() {
         if (instance == null) {
-            try {
-                instance = new PhoneBook();
-            } catch (IOException e) {
-                System.err.println("Failed to create PhoneBook");
-                e.printStackTrace();
-                System.exit(1);
-            }
+            instance = new PhoneBook();
         }
         return instance;
     }
 
-    private PhoneBook() throws IOException {
-        //storage = new CSVStorage(this, "phonebook.csv");
-        storage = new DBStorage(this);
+    private PhoneBook() {
+        storage = new DBStorage("users");
     }
 
     public List<User> getUsers() {

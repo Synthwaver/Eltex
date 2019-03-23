@@ -4,19 +4,20 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DBStorage extends PhoneBookStorage {
+public class DBStorage implements PhoneBookStorage {
     private static final String CONNECTION_URL = "jdbc:mysql://localhost:3306/phonebook?serverTimezone=UTC";
     private static final String LOGIN = "admin";
     private static final String PASSWORD = "qwerty";
-    private static final String TABLE_NAME = "users";
 
-    public DBStorage(PhoneBook phoneBook) {
-        super(phoneBook);
+    private final String tableName;
+
+    public DBStorage(String tableName) {
+        this.tableName = tableName;
     }
 
     @Override
     public List<User> getAllUsers() {
-        final String selectQuery = "SELECT * FROM " + TABLE_NAME;
+        final String selectQuery = "SELECT * FROM " + tableName;
         try (Connection connection = DriverManager.getConnection(CONNECTION_URL, LOGIN, PASSWORD);
              Statement statement = connection.createStatement()) {
 
@@ -37,7 +38,7 @@ public class DBStorage extends PhoneBookStorage {
 
     @Override
     public void insertNewUser(String name, String phoneNumber) {
-        final String insertQuery = "INSERT INTO " + TABLE_NAME + " (name, phone) VALUE (?, ?)";
+        final String insertQuery = "INSERT INTO " + tableName + " (name, phone) VALUE (?, ?)";
 
         try (Connection connection = DriverManager.getConnection(CONNECTION_URL, LOGIN, PASSWORD);
                 PreparedStatement statement = connection.prepareStatement(insertQuery)) {
@@ -51,7 +52,7 @@ public class DBStorage extends PhoneBookStorage {
 
     @Override
     public void removeUserById(int id) {
-        final String deleteQuery = "DELETE FROM " + TABLE_NAME + " WHERE id = " + id;
+        final String deleteQuery = "DELETE FROM " + tableName + " WHERE id = " + id;
         try (Connection connection = DriverManager.getConnection(CONNECTION_URL, LOGIN, PASSWORD);
                 Statement statement = connection.createStatement()) {
             statement.executeUpdate(deleteQuery);
