@@ -5,11 +5,11 @@ public class User implements CSV {
     private String name;
     private String phoneNumber;
 
-    User(String csvLine) {
+    public User(String csvLine) {
         initWithCSV(csvLine);
     }
 
-    User(int id, String name, String phoneNumber) {
+    public User(int id, String name, String phoneNumber) {
         setId(id);
         setName(name);
         setPhoneNumber(phoneNumber);
