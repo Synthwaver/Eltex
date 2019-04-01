@@ -18,5 +18,11 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'ru.eltex.server.App'
+    }
+}
+
 targetCompatibility = '8'
 sourceCompatibility = '8'
