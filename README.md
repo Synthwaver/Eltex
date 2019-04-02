@@ -1,0 +1,1 @@
+<img src="https://travis-ci.org/Synthwaver/Eltex.svg?branch=master" alt="Build Status" />
