@@ -62,7 +62,7 @@ public class Client implements Runnable {
     }
 
     private String readHeader() throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
         StringBuilder sb = new StringBuilder();
         while (true) {
             String line = reader.readLine();
@@ -86,7 +86,7 @@ public class Client implements Runnable {
 
     private byte[] getResponseContent(String page) throws IOException {
         if (page.equals(PHONEBOOK_PAGE)) {
-            return getUsersHtmlTable().getBytes();
+            return getUsersHtmlTable().getBytes("UTF-8");
         }
 
         try (RandomAccessFile file = new RandomAccessFile(page, "r")) {
@@ -100,7 +100,7 @@ public class Client implements Runnable {
         final String response = "HTTP/1.1 200 OK\r\n" +
                 "Content-Type: text/html;charset=utf-8\r\n" +
                 "Content-Length: " + content.length + "\r\n\r\n";
-        out.write(response.getBytes());
+        out.write(response.getBytes("UTF-8"));
         out.write(content);
         out.flush();
     }

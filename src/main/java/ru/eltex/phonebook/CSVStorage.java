@@ -12,14 +12,18 @@ public class CSVStorage implements PhoneBookStorage {
         this.csvFileName = csvFileName;
 
         File file = new File(csvFileName);
-        if (!file.exists()){
-            file.createNewFile();
+        if (!file.exists()) {
+            boolean success = file.createNewFile();
+            if (!success) {
+                System.err.println("Failed to create file '" + csvFileName + "'");
+            }
         }
     }
 
     @Override
     public List<User> getAllUsers() {
-        try (FileReader reader = new FileReader(csvFileName); Scanner scanner = new Scanner(reader)) {
+        try (FileInputStream fileInputStream = new FileInputStream(csvFileName);
+                Scanner scanner = new Scanner(fileInputStream, "UTF-8")) {
             List<User> users = new ArrayList<>();
             while (scanner.hasNextLine()) {
                 String csvLine = scanner.nextLine();
@@ -42,7 +46,8 @@ public class CSVStorage implements PhoneBookStorage {
 
         User newUser = new User(lastId + 1, name, phoneNumber);
 
-        try (FileWriter writer = new FileWriter(csvFileName, true)) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(csvFileName, true);
+                Writer writer = new OutputStreamWriter(fileOutputStream, "UTF-8")) {
             writer.write(newUser.toCSV() + "\n");
         } catch (IOException e) {
             System.err.println("Failed to write to file '" + csvFileName + "'");
@@ -57,7 +62,8 @@ public class CSVStorage implements PhoneBookStorage {
     }
 
     private void writeToFile(List<User> users) {
-        try (FileWriter writer = new FileWriter(csvFileName)) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(csvFileName);
+                Writer writer = new OutputStreamWriter(fileOutputStream, "UTF-8")) {
             for (User user : users) {
                 writer.write(user.toCSV() + "\n");
             }

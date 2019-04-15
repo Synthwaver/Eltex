@@ -6,8 +6,14 @@ import java.util.List;
 
 public class DBStorage implements PhoneBookStorage {
     private static final String CONNECTION_URL = "jdbc:mysql://localhost:3306/phonebook?serverTimezone=UTC";
-    private static final String LOGIN = "admin";
-    private static final String PASSWORD = "qwerty";
+
+    private static String getLogin() {
+        return "admin";
+    }
+
+    private static String getPassword() {
+        return "qwerty";
+    }
 
     private final String tableName;
 
@@ -18,7 +24,7 @@ public class DBStorage implements PhoneBookStorage {
     @Override
     public List<User> getAllUsers() {
         final String selectQuery = "SELECT * FROM " + tableName;
-        try (Connection connection = DriverManager.getConnection(CONNECTION_URL, LOGIN, PASSWORD);
+        try (Connection connection = DriverManager.getConnection(CONNECTION_URL, getLogin(), getPassword());
              Statement statement = connection.createStatement()) {
 
             List<User> users = new ArrayList<>();
@@ -40,7 +46,7 @@ public class DBStorage implements PhoneBookStorage {
     public void insertNewUser(String name, String phoneNumber) {
         final String insertQuery = "INSERT INTO " + tableName + " (name, phone) VALUE (?, ?)";
 
-        try (Connection connection = DriverManager.getConnection(CONNECTION_URL, LOGIN, PASSWORD);
+        try (Connection connection = DriverManager.getConnection(CONNECTION_URL, getLogin(), getPassword());
                 PreparedStatement statement = connection.prepareStatement(insertQuery)) {
             statement.setString(1, name);
             statement.setString(2, phoneNumber);
@@ -53,7 +59,7 @@ public class DBStorage implements PhoneBookStorage {
     @Override
     public void removeUserById(int id) {
         final String deleteQuery = "DELETE FROM " + tableName + " WHERE id = " + id;
-        try (Connection connection = DriverManager.getConnection(CONNECTION_URL, LOGIN, PASSWORD);
+        try (Connection connection = DriverManager.getConnection(CONNECTION_URL, getLogin(), getPassword());
                 Statement statement = connection.createStatement()) {
             statement.executeUpdate(deleteQuery);
         } catch (SQLException e) {

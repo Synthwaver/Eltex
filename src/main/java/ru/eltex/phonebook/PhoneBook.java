@@ -24,7 +24,7 @@ public class PhoneBook {
 
     public void enterMenu() {
         new Thread(() -> {
-            Scanner scanner = new Scanner(System.in);
+            Scanner scanner = createStdinScanner();
             while (true) {
                 System.out.println("Menu:");
                 System.out.println("  1. Print all users\n  2. Add user\n  3. Remove user\n  0. Exit");
@@ -48,15 +48,15 @@ public class PhoneBook {
             return;
         }
 
-        System.out.printf("%3s %30s %20s\n", "ID", "Name", "Phone number");
+        System.out.printf("%3s %30s %20s%n", "ID", "Name", "Phone number");
         for (User user : users) {
-            System.out.printf("%3d %30s %20s\n", user.getId(), user.getName(), user.getPhoneNumber());
+            System.out.printf("%3d %30s %20s%n", user.getId(), user.getName(), user.getPhoneNumber());
         }
         System.out.println();
     }
     
     private void addUser() {
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = createStdinScanner();
         System.out.print("Name: ");
         String name = scanner.nextLine();
         System.out.print("Phone number: ");
@@ -66,10 +66,14 @@ public class PhoneBook {
     }
     
     private void removeUser() {
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = createStdinScanner();
         System.out.println("ID: ");
         int id = scanner.nextInt();
 
         storage.removeUserById(id);
+    }
+
+    private static Scanner createStdinScanner() {
+        return new Scanner(System.in, "UTF-8");
     }
 }
