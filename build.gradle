@@ -1,5 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'application'
+apply plugin: 'findbugs'
+
 mainClassName='ru.eltex.server.App'
 
 run {
@@ -29,4 +31,11 @@ sourceCompatibility = '8'
 
 task getdate(type:Exec) {
     commandLine "bash", "-c", "date >> /tmp/date"
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
 }
