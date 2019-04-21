@@ -11,3 +11,6 @@ before_install:
   - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' WITH GRANT OPTION;"
 
 script: gradle build jar
+
+after_failure:
+  - cat /home/travis/build/Synthwaver/Eltex/build/reports/findbugs/main.html
