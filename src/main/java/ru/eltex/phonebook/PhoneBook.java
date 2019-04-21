@@ -4,15 +4,10 @@ import java.util.List;
 import java.util.Scanner;
 
 public class PhoneBook {
-    private final PhoneBookStorage storage;
 
-    private static PhoneBook instance;
-    public static PhoneBook getInstance() {
-        if (instance == null) {
-            instance = new PhoneBook();
-        }
-        return instance;
-    }
+    public static final PhoneBook INSTANCE = new PhoneBook();
+
+    private final PhoneBookStorage storage;
 
     private PhoneBook() {
         storage = new DBStorage("users");
@@ -23,22 +18,20 @@ public class PhoneBook {
     }
 
     public void enterMenu() {
-        new Thread(() -> {
-            Scanner scanner = createStdinScanner();
-            while (true) {
-                System.out.println("Menu:");
-                System.out.println("  1. Print all users\n  2. Add user\n  3. Remove user\n  0. Exit");
-                System.out.print("Enter option: ");
+        Scanner scanner = createStdinScanner();
+        while (true) {
+            System.out.println("Menu:");
+            System.out.println("  1. Print all users\n  2. Add user\n  3. Remove user\n  0. Exit");
+            System.out.print("Enter option: ");
 
-                int option = scanner.nextInt();
-                switch (option) {
-                    case 1: printUsers(); break;
-                    case 2: addUser(); break;
-                    case 3: removeUser(); break;
-                    case 0: System.exit(0);
-                }
+            int option = scanner.nextInt();
+            switch (option) {
+                case 1: printUsers(); break;
+                case 2: addUser(); break;
+                case 3: removeUser(); break;
+                case 0: System.exit(0);
             }
-        }).start();
+        }
     }
 
     private void printUsers() {
