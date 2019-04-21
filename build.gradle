@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'findbugs'
 
-mainClassName='ru.eltex.server.App'
+mainClassName='ru.eltex.phonebook.App'
 
 run {
     standardInput = System.in

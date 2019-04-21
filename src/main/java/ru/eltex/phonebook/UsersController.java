@@ -1,9 +1,7 @@
-package ru.eltex.server;
+package ru.eltex.phonebook;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.eltex.phonebook.PhoneBook;
-import ru.eltex.phonebook.User;
 
 import java.util.List;
 

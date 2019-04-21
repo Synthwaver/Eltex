@@ -1,13 +1,9 @@
 package ru.eltex.phonebook;
 
-public class User implements CSV {
+public class User {
     private int id;
     private String name;
     private String phoneNumber;
-
-    public User(String csvLine) {
-        initWithCSV(csvLine);
-    }
 
     public User(int id, String name, String phoneNumber) {
         setId(id);
@@ -37,21 +33,5 @@ public class User implements CSV {
     
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    @Override
-    public String toCSV() {
-        return String.format("%d;%s;%s", id, name, phoneNumber);
-    }
-
-    @Override
-    public void initWithCSV(String csvLine) {
-        String[] args = csvLine.split(";");
-        if(args.length != 3) {
-            throw new IllegalArgumentException(csvLine);
-        }
-        setId(Integer.parseInt(args[0]));
-        setName(args[1]);
-        setPhoneNumber(args[2]);
     }
 }
