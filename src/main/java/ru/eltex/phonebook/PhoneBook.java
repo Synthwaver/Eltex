@@ -29,7 +29,7 @@ public class PhoneBook {
                 case 1: printUsers(); break;
                 case 2: addUser(); break;
                 case 3: removeUser(); break;
-                case 0: System.exit(0);
+                case 0: return;
             }
         }
     }

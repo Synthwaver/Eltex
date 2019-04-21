@@ -28,12 +28,13 @@ public class DBStorage implements PhoneBookStorage {
              Statement statement = connection.createStatement()) {
 
             List<User> users = new ArrayList<>();
-            ResultSet resultSet = statement.executeQuery(selectQuery);
-            while(resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
-                String phoneNumber = resultSet.getString("phone");
-                users.add(new User(id, name, phoneNumber));
+            try (ResultSet resultSet = statement.executeQuery(selectQuery)) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String name = resultSet.getString("name");
+                    String phoneNumber = resultSet.getString("phone");
+                    users.add(new User(id, name, phoneNumber));
+                }
             }
             return users;
         } catch (SQLException e) {
