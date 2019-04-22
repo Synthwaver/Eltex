@@ -1,5 +1,8 @@
 package ru.eltex.phonebook;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +21,8 @@ public class DBStorage implements PhoneBookStorage {
         return "qwerty";
     }
 
+    private static final Logger logger = LogManager.getLogger(DBStorage.class);
+
     private final String tableName;
 
     /**
@@ -26,6 +31,7 @@ public class DBStorage implements PhoneBookStorage {
      */
     public DBStorage(String tableName) {
         this.tableName = tableName;
+        logger.debug("Created DBStorage instance with tableName = '" + tableName + "'");
     }
 
     /**
@@ -47,8 +53,10 @@ public class DBStorage implements PhoneBookStorage {
                     users.add(new User(id, name, phoneNumber));
                 }
             }
+            logger.debug("getAllUsers() for table '" + tableName + "' returned " + users.size() + " user(s)");
             return users;
         } catch (SQLException e) {
+            logger.warn("Failed to obtain users from the database", e);
             System.err.println(e.getMessage());
             return null;
         }
@@ -63,12 +71,17 @@ public class DBStorage implements PhoneBookStorage {
     public void insertNewUser(String name, String phoneNumber) {
         final String insertQuery = "INSERT INTO " + tableName + " (name, phone) VALUE (?, ?)";
 
+        logger.info("Inserting new user into table '" + tableName + "' with name=  '"
+                + name + "', phoneNumber = '" + phoneNumber + "'...");
         try (Connection connection = DriverManager.getConnection(CONNECTION_URL, getLogin(), getPassword());
                 PreparedStatement statement = connection.prepareStatement(insertQuery)) {
             statement.setString(1, name);
             statement.setString(2, phoneNumber);
             statement.executeUpdate();
+            logger.info("User with name '" + name + "' inserted successfully");
         } catch (SQLException e) {
+            logger.warn("Failed to create a new user with name = '" +
+                    name + "', phone number = '" + phoneNumber + "'", e);
             System.err.println(e.getMessage());
         }
     }
@@ -80,10 +93,13 @@ public class DBStorage implements PhoneBookStorage {
     @Override
     public void removeUserById(int id) {
         final String deleteQuery = "DELETE FROM " + tableName + " WHERE id = " + id;
+        logger.info("Removing user with ID " + id + "...");
         try (Connection connection = DriverManager.getConnection(CONNECTION_URL, getLogin(), getPassword());
                 Statement statement = connection.createStatement()) {
-            statement.executeUpdate(deleteQuery);
+            boolean success = 1 == statement.executeUpdate(deleteQuery);
+            logger.info("User with ID " + id + (success ? " removed successfully" : " was not found"));
         } catch (SQLException e) {
+            logger.warn("Failed to remove user with ID " + id, e);
             System.err.println(e.getMessage());
         }
     }
