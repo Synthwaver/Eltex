@@ -3,20 +3,38 @@ package ru.eltex.phonebook;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Singleton class for working with the phone book
+ */
 public class PhoneBook {
 
     public static final PhoneBook INSTANCE = new PhoneBook();
 
     private final PhoneBookStorage storage;
 
+    /**
+     * Allocates a new phone book object
+     */
     private PhoneBook() {
         storage = new DBStorage("users");
     }
 
+    /**
+     * Get all {@link User}s from the phone book
+     * @return list of {@link User}s stored in the phone book
+     */
     public List<User> getUsers() {
         return storage.getAllUsers();
     }
 
+    /**
+     * Open console menu for interaction with the phone book and wait for inputs.
+     * <p>The options are:
+     * <p>1. List all the users
+     * <p>2. Create new user
+     * <p>3. Remove existing user
+     * <p>0. Exit
+     */
     public void enterMenu() {
         Scanner scanner = createStdinScanner();
         while (true) {
@@ -34,6 +52,9 @@ public class PhoneBook {
         }
     }
 
+    /**
+     * Print all users stored in the phone book
+     */
     private void printUsers() {
         List<User> users = storage.getAllUsers();
         if (users.size() == 0) {
@@ -47,7 +68,10 @@ public class PhoneBook {
         }
         System.out.println();
     }
-    
+
+    /**
+     * Start dialog for user creation
+     */
     private void addUser() {
         Scanner scanner = createStdinScanner();
         System.out.print("Name: ");
@@ -57,7 +81,10 @@ public class PhoneBook {
 
         storage.insertNewUser(name, phoneNumber);
     }
-    
+
+    /**
+     * Start dialog for user deletion
+     */
     private void removeUser() {
         Scanner scanner = createStdinScanner();
         System.out.println("ID: ");
@@ -65,6 +92,7 @@ public class PhoneBook {
 
         storage.removeUserById(id);
     }
+
 
     private static Scanner createStdinScanner() {
         return new Scanner(System.in, "UTF-8");

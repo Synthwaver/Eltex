@@ -4,6 +4,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class providing access to the phone book MySQL database
+ */
 public class DBStorage implements PhoneBookStorage {
     private static final String CONNECTION_URL = "jdbc:mysql://localhost:3306/phonebook?serverTimezone=UTC";
 
@@ -17,10 +20,18 @@ public class DBStorage implements PhoneBookStorage {
 
     private final String tableName;
 
+    /**
+     * Allocates {@link DBStorage} object for further work with database table
+     * @param tableName the name of database table
+     */
     public DBStorage(String tableName) {
         this.tableName = tableName;
     }
 
+    /**
+     * Get all users from the table
+     * @return list of {@link User}s obtained from the table
+     */
     @Override
     public List<User> getAllUsers() {
         final String selectQuery = "SELECT * FROM " + tableName;
@@ -43,6 +54,11 @@ public class DBStorage implements PhoneBookStorage {
         }
     }
 
+    /**
+     * Create new user in the database table
+     * @param name the name of new user
+     * @param phoneNumber the phone number of new user
+     */
     @Override
     public void insertNewUser(String name, String phoneNumber) {
         final String insertQuery = "INSERT INTO " + tableName + " (name, phone) VALUE (?, ?)";
@@ -57,6 +73,10 @@ public class DBStorage implements PhoneBookStorage {
         }
     }
 
+    /**
+     * Remove user from the database table by ID
+     * @param id the id of user to remove
+     */
     @Override
     public void removeUserById(int id) {
         final String deleteQuery = "DELETE FROM " + tableName + " WHERE id = " + id;
